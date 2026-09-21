@@ -72,8 +72,8 @@ function submitPin() {
 
 // 6. Route user to the correct dashboard
 function routeUser(user) {
-    // Hide login screen
-    document.getElementById('login-screen').classList.remove('active');
+    // Hide all screens first
+    document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
 
     if (user.role === 'technician') {
         document.getElementById('tech-name').innerText = user.name;
@@ -87,7 +87,6 @@ function routeUser(user) {
         document.getElementById('incharge-dept').innerText = user.service;
         document.getElementById('incharge-dashboard').classList.add('active');
         
-        // Initialize In-Charge Dashboard
         if (typeof initInChargeDashboard === 'function') {
             initInChargeDashboard();
         }
