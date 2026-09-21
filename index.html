@@ -3,19 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AC Preventive Maintenance System</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background-color: #f4f4f9; }
-        h1 { color: #333; }
-        p { color: #666; }
-        .box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: inline-block; }
-    </style>
+    <title>AC PM System - Login</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="box">
-        <h1>❄️ AC PM System</h1>
-        <p>Repository setup successfully!</p>
-        <p>Next step: Build the PIN Login Screen.</p>
+
+    <!-- ================= LOGIN SCREEN ================= -->
+    <div id="login-screen" class="screen active">
+        <div class="login-box">
+            <div class="logo">❄️</div>
+            <h1>AC PM System</h1>
+            <p>Enter your 4-digit PIN</p>
+            
+            <div class="pin-display" id="pin-display">----</div>
+            <div class="error-msg" id="error-msg"></div>
+
+            <div class="keypad">
+                <button class="key" onclick="pressKey('1')">1</button>
+                <button class="key" onclick="pressKey('2')">2</button>
+                <button class="key" onclick="pressKey('3')">3</button>
+                <button class="key" onclick="pressKey('4')">4</button>
+                <button class="key" onclick="pressKey('5')">5</button>
+                <button class="key" onclick="pressKey('6')">6</button>
+                <button class="key" onclick="pressKey('7')">7</button>
+                <button class="key" onclick="pressKey('8')">8</button>
+                <button class="key" onclick="pressKey('9')">9</button>
+                <button class="key clear" onclick="clearPin()">C</button>
+                <button class="key" onclick="pressKey('0')">0</button>
+                <button class="key enter" onclick="submitPin()">✓</button>
+            </div>
+        </div>
     </div>
+
+    <!-- ================= TECHNICIAN DASHBOARD (Placeholder) ================= -->
+    <div id="tech-dashboard" class="screen">
+        <div class="dashboard-box">
+            <h2>Technician Dashboard</h2>
+            <p>Welcome, <span id="tech-name"></span></p>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+            <div class="placeholder-content">
+                <p>Next step: Service Selection & AC Checklist will go here.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= IN-CHARGE DASHBOARD (Placeholder) ================= -->
+    <div id="incharge-dashboard" class="screen">
+        <div class="dashboard-box">
+            <h2>In-Charge Dashboard</h2>
+            <p>Welcome, <span id="incharge-name"></span></p>
+            <p>Department: <span id="incharge-dept"></span></p>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+            <div class="placeholder-content">
+                <p>Next step: Pending Approvals will go here.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
 </body>
 </html>
