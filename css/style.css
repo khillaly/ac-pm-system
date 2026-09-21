@@ -126,3 +126,114 @@ body { background-color: #eef2f5; display: flex; justify-content: center; align-
     #reports-table th { background-color: #0056b3 !important; color: white !important; }
     #reports-table td { border-bottom: 1px solid #000; }
 }
+/* ================= SMART PDF REPORT STYLES ================= */
+.pdf-page {
+    padding: 40px;
+    font-family: 'Helvetica', Arial, sans-serif;
+    background: white;
+    color: #333;
+    width: 800px;
+    box-sizing: border-box;
+    page-break-after: always; /* Forces each AC onto a new page */
+}
+
+/* Header */
+.pdf-header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 3px solid #0056b3;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+.pdf-title {
+    font-size: 24px;
+    color: #0056b3;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.pdf-site-info {
+    font-size: 14px;
+    color: #555;
+}
+.pdf-meta {
+    font-size: 12px;
+    color: #666;
+    text-align: right;
+    line-height: 1.6;
+}
+
+/* Blue AC Card */
+.pdf-card {
+    background: #0056b3;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+.pdf-card h2 {
+    margin: 0 0 10px 0;
+    font-size: 22px;
+}
+.pdf-card p {
+    margin: 0 0 5px 0;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* Section Headers */
+.pdf-section {
+    margin-bottom: 25px;
+}
+.pdf-section-title {
+    background: #0056b3;
+    color: white;
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+}
+
+/* Two-Column Checklist */
+.pdf-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    font-size: 13px;
+}
+.pdf-grid-item {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+    page-break-inside: avoid;
+}
+.pdf-status-pass { color: #28a745; font-weight: bold; margin-left: 5px; }
+.pdf-status-fail { color: #dc3545; font-weight: bold; margin-left: 5px; }
+.pdf-status-na { color: #6c757d; font-weight: bold; margin-left: 5px; }
+.pdf-note {
+    display: block;
+    font-size: 11px;
+    color: #666;
+    font-style: italic;
+    margin-top: 3px;
+}
+
+/* Signatures */
+.pdf-footer {
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    page-break-inside: avoid;
+}
+.pdf-signature-box {
+    width: 250px;
+}
+.pdf-signature-line {
+    border-top: 1px solid #000;
+    margin-top: 40px;
+    padding-top: 5px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+}
