@@ -1,0 +1,31 @@
+/* Reset and Base Styles */
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { background-color: #eef2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+
+/* Screen Management */
+.screen { display: none; width: 100%; max-width: 400px; padding: 20px; }
+.screen.active { display: block; }
+
+/* Login Box */
+.login-box { background: white; padding: 30px 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; }
+.logo { font-size: 50px; margin-bottom: 10px; }
+.login-box h1 { font-size: 24px; color: #333; margin-bottom: 5px; }
+.login-box p { color: #777; margin-bottom: 20px; font-size: 14px; }
+
+/* PIN Display */
+.pin-display { font-size: 36px; letter-spacing: 10px; color: #007bff; margin-bottom: 10px; font-weight: bold; height: 50px; }
+.error-msg { color: #dc3545; font-size: 14px; height: 20px; margin-bottom: 15px; }
+
+/* Keypad */
+.keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+.key { padding: 20px; font-size: 24px; border: none; border-radius: 10px; background-color: #f8f9fa; color: #333; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: background 0.2s; }
+.key:active { background-color: #e2e6ea; transform: translateY(2px); }
+.key.clear { background-color: #ffc107; color: #333; font-weight: bold; }
+.key.enter { background-color: #28a745; color: white; font-weight: bold; }
+
+/* Dashboards */
+.dashboard-box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; }
+.dashboard-box h2 { color: #333; margin-bottom: 10px; }
+.dashboard-box p { color: #555; margin-bottom: 5px; }
+.logout-btn { background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 5px; margin: 15px 0; cursor: pointer; }
+.placeholder-content { margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 10px; color: #777; font-size: 14px; border: 1px dashed #ccc; }
