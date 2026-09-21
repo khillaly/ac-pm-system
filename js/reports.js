@@ -197,14 +197,29 @@ function generateSmartPDF() {
         container.innerHTML += pageHtml;
     });
 
-    // --- 5. Convert HTML to PDF ---
+       // --- 5. Convert HTML to PDF ---
+    // Temporarily make the container visible for the PDF generator to read it
+    container.style.opacity = '1';
+    container.style.zIndex = '9999';
+    container.style.position = 'relative';
+
     const opt = {
         margin:       0,
         filename:     `CHUB_AC_PM_Report_${new Date().toISOString().split('T')[0]}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'px', format: [800, 1130], orientation: 'portrait' } // Custom size matching our 800px width
+        html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
+        jsPDF:        { unit: 'px', format: [800, 1130], orientation: 'portrait' } 
     };
+
+    // Generate and download the PDF, then hide the container again
+    html2pdf().set(opt).from(container).save().then(() => {
+        // PDF Downloaded! Hide the container again to keep the app clean
+        container.style.opacity = '0';
+        container.style.zIndex = '-1';
+        container.style.position = 'absolute';
+        container.innerHTML = ''; // Clear the content
+    });
+}
 
     // Generate and download the PDF
     html2pdf().set(opt).from(container).save();
