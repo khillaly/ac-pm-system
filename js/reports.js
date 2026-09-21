@@ -1,11 +1,8 @@
 // 1. Show Reports Screen
 function showReportsScreen() {
-    // Hide all other screens
-    document.getElementById('tech-dashboard').classList.remove('active');
-    document.getElementById('incharge-dashboard').classList.remove('active');
+    document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
     document.getElementById('reports-screen').classList.add('active');
     
-    // Default filter to approved
     document.getElementById('report-filter').value = "approved";
     renderReportsTable();
 }
@@ -22,16 +19,15 @@ function hideReportsScreen() {
     }
 }
 
-// 3. Render the Reports Table
+// 3. Render the Reports Table (On-Screen)
 function renderReportsTable() {
     const filter = document.getElementById('report-filter').value;
     const tbody = document.getElementById('reports-tbody');
     tbody.innerHTML = '';
     
-    // Get all records from local storage
     let allRecords = JSON.parse(localStorage.getItem('pmRecords')) || [];
     
-    // Filter based on selection
+    // Filter logic
     let filteredRecords = allRecords;
     if (filter !== 'all') {
         filteredRecords = allRecords.filter(r => r.status === filter);
@@ -41,25 +37,23 @@ function renderReportsTable() {
     filteredRecords.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
 
     if (filteredRecords.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#777;">No records found for this filter.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; color:#777;">No records found for this filter.</td></tr>';
         return;
     }
 
-    filteredRecords.forEach(record => {
+    filteredRecords.forEach((record, index) => {
         const tr = document.createElement('tr');
-        
-        // Format status badge
-        let statusColor = record.status === 'approved' ? 'green' : (record.status === 'pending' ? 'orange' : 'red');
-        let approvedBy = record.approvedBy ? record.approvedBy : '-';
-        
         tr.innerHTML = `
-            <td>${record.date}</td>
+            <td>${index + 1}</td>
             <td><strong>${record.tag}</strong></td>
             <td>${record.dept}</td>
             <td>${record.location}</td>
+            <td>${record.type}</td>
+            <td>${record.brand}</td>
+            <td>${record.model}</td>
+            <td>${record.serial}</td>
+            <td>${record.date}</td>
             <td>${record.technicianName}</td>
-            <td style="color:${statusColor}; font-weight:bold;">${record.status.toUpperCase()}</td>
-            <td>${approvedBy}</td>
         `;
         tbody.appendChild(tr);
     });
@@ -79,48 +73,111 @@ function exportToCSV() {
         return;
     }
 
-    // Define CSV Headers
-    const headers = ["Date", "Tag Number", "Department", "Location", "Brand", "Model", "Serial", "Technician", "Status", "Approved By", "Approval Date", "Notes"];
+    const headers = ["No.", "Tag Number", "Department/Service", "Location", "AC Type", "Brand", "Model", "Serial Number", "PM Date", "Technician", "Status", "Approved By"];
     
-    // Build CSV Rows
-    const rows = allRecords.map(record => {
-        // Combine notes into a single string
-        let notesString = "";
-        if (record.notes) {
-            notesString = Object.entries(record.notes).map(([key, val]) => `${key}: ${val}`).join(" | ");
-        }
-        
+    const rows = allRecords.map((record, index) => {
         return [
-            record.date,
+            index + 1,
             `"${record.tag}"`,
             `"${record.dept}"`,
             `"${record.location}"`,
+            `"${record.type}"`,
             `"${record.brand}"`,
             `"${record.model}"`,
             `"${record.serial}"`,
+            record.date,
             `"${record.technicianName}"`,
             record.status,
-            `"${record.approvedBy || ''}"`,
-            record.approvedAt ? record.approvedAt.split('T')[0] : '',
-            `"${notesString}"`
+            `"${record.approvedBy || ''}"`
         ].join(",");
     });
 
     const csvContent = headers.join(",") + "\n" + rows.join("\n");
-    
-    // Create a Blob and trigger download
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
     link.setAttribute("href", url);
-    link.setAttribute("download", `PM_Report_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute("download", `CHUB_AC_PM_Report_${new Date().toISOString().split('T')[0]}.csv`);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 }
 
-// 5. Print Report (Triggers browser print dialog)
-function printReport() {
-    window.print();
+// 5. Generate Smart PDF (The Official CHUB Format)
+function generateSmartPDF() {
+    // Filter to ONLY include approved records for the official report
+    let allRecords = JSON.parse(localStorage.getItem('pmRecords')) || [];
+    const approvedRecords = allRecords.filter(r => r.status === "approved");
+
+    if (approvedRecords.length === 0) {
+        alert("No approved records found to generate the report.");
+        return;
+    }
+
+    // Initialize jsPDF in Landscape mode
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('l', 'mm', 'a4'); // 'l' = landscape, 'mm' = millimeters, 'a4' = paper size
+
+    // --- 1. Document Header ---
+    doc.setFontSize(18);
+    doc.setTextColor(0, 86, 179); // CHUB Blue
+    doc.text("CHUB Hospital - Air Conditioner Preventive Maintenance Report", 14, 15);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text(`Generated Date: ${new Date().toLocaleDateString()}`, 14, 22);
+    doc.text(`Total Units Serviced: ${approvedRecords.length}`, 14, 27);
+
+    // --- 2. Build Table Data ---
+    const tableColumn = ["No.", "Tag Number", "Department/Service", "Location", "AC Type", "Brand", "Model", "Serial Number", "PM Date", "Technician"];
+    const tableRows = [];
+
+    approvedRecords.forEach((record, index) => {
+        const rowData = [
+            index + 1,
+            record.tag,
+            record.dept,
+            record.location,
+            record.type,
+            record.brand,
+            record.model,
+            record.serial,
+            record.date,
+            record.technicianName
+        ];
+        tableRows.push(rowData);
+    });
+
+    // --- 3. Generate AutoTable ---
+    doc.autoTable({
+        head: [tableColumn],
+        body: tableRows,
+        startY: 35, // Start Y position after the header
+        theme: 'grid', // 'grid', 'striped', or 'plain'
+        headStyles: { fillColor: [0, 86, 179], textColor: [255, 255, 255], fontSize: 8 },
+        bodyStyles: { fontSize: 7, textColor: [50, 50, 50] },
+        alternateRowStyles: { fillColor: [245, 245, 245] },
+        margin: { top: 35, left: 14, right: 14 },
+        didDrawPage: function (data) {
+            // Add page numbers at the bottom
+            const pageCount = doc.internal.getNumberOfPages();
+            doc.setFontSize(8);
+            doc.text(`Page ${data.pageNumber} of ${pageCount}`, data.settings.margin.left, doc.internal.pageSize.height - 10);
+        }
+    });
+
+    // --- 4. Add Signatures at the Bottom ---
+    const finalY = doc.lastAutoTable.finalY + 20; // Get Y position after the table ends
+    
+    doc.setFontSize(10);
+    doc.setTextColor(0);
+    doc.text("Prepared by: Hillaly KUBWIMANA", 14, finalY);
+    doc.line(14, finalY + 2, 80, finalY + 2); // Signature line
+
+    doc.text("Approved by: Munyaneza Joseph", 140, finalY);
+    doc.line(140, finalY + 2, 200, finalY + 2); // Signature line
+
+    // --- 5. Save the PDF ---
+    doc.save(`CHUB_AC_PM_Report_${new Date().toISOString().split('T')[0]}.pdf`);
 }
