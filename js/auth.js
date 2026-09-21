@@ -79,7 +79,6 @@ function routeUser(user) {
         document.getElementById('tech-name').innerText = user.name;
         document.getElementById('tech-dashboard').classList.add('active');
         
-        // Initialize the technician dashboard (load departments)
         if (typeof initTechnicianDashboard === 'function') {
             initTechnicianDashboard();
         }
@@ -87,9 +86,13 @@ function routeUser(user) {
         document.getElementById('incharge-name').innerText = user.name;
         document.getElementById('incharge-dept').innerText = user.service;
         document.getElementById('incharge-dashboard').classList.add('active');
+        
+        // Initialize In-Charge Dashboard
+        if (typeof initInChargeDashboard === 'function') {
+            initInChargeDashboard();
+        }
     }
 }
-
 // 7. Logout Function
 function logout() {
     sessionStorage.removeItem("currentUser");
