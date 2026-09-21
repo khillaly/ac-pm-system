@@ -6,8 +6,18 @@ async function loadData() {
     try {
         const response = await fetch('data/seed-data.json');
         const data = await response.json();
+        
+        // Store data globally so other scripts can access it
+        window.appData = data; 
         usersData = data.users;
-        console.log("User data loaded successfully");
+        
+        console.log("System data loaded successfully");
+        
+        // If a user is already logged in (page refresh), route them
+        const savedUser = sessionStorage.getItem("currentUser");
+        if (savedUser) {
+            routeUser(JSON.parse(savedUser));
+        }
     } catch (error) {
         console.error("Error loading seed data:", error);
         document.getElementById('error-msg').innerText = "Error loading system data.";
@@ -68,6 +78,11 @@ function routeUser(user) {
     if (user.role === 'technician') {
         document.getElementById('tech-name').innerText = user.name;
         document.getElementById('tech-dashboard').classList.add('active');
+        
+        // Initialize the technician dashboard (load departments)
+        if (typeof initTechnicianDashboard === 'function') {
+            initTechnicianDashboard();
+        }
     } else if (user.role === 'incharge') {
         document.getElementById('incharge-name').innerText = user.name;
         document.getElementById('incharge-dept').innerText = user.service;
