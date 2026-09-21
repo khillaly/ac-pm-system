@@ -104,9 +104,8 @@ function exportToCSV() {
     document.body.removeChild(link);
 }
 
-// 5. Generate Smart PDF (The Official CHUB Format)
+// 5. Generate Smart PDF (One AC per page, styled like the Generator Report)
 function generateSmartPDF() {
-    // Filter to ONLY include approved records for the official report
     let allRecords = JSON.parse(localStorage.getItem('pmRecords')) || [];
     const approvedRecords = allRecords.filter(r => r.status === "approved");
 
@@ -115,69 +114,98 @@ function generateSmartPDF() {
         return;
     }
 
-    // Initialize jsPDF in Landscape mode
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('l', 'mm', 'a4'); // 'l' = landscape, 'mm' = millimeters, 'a4' = paper size
+    const container = document.getElementById('pdf-output-container');
+    container.innerHTML = ''; // Clear previous content
 
-    // --- 1. Document Header ---
-    doc.setFontSize(18);
-    doc.setTextColor(0, 86, 179); // CHUB Blue
-    doc.text("CHUB Hospital - Air Conditioner Preventive Maintenance Report", 14, 15);
-    
-    doc.setFontSize(10);
-    doc.setTextColor(100);
-    doc.text(`Generated Date: ${new Date().toLocaleDateString()}`, 14, 22);
-    doc.text(`Total Units Serviced: ${approvedRecords.length}`, 14, 27);
+    const template = window.appData.checklistTemplate;
 
-    // --- 2. Build Table Data ---
-    const tableColumn = ["No.", "Tag Number", "Department/Service", "Location", "AC Type", "Brand", "Model", "Serial Number", "PM Date", "Technician"];
-    const tableRows = [];
+    // Loop through each approved AC and build its page
+    approvedRecords.forEach(record => {
+        let pageHtml = `<div class="pdf-page">`;
 
-    approvedRecords.forEach((record, index) => {
-        const rowData = [
-            index + 1,
-            record.tag,
-            record.dept,
-            record.location,
-            record.type,
-            record.brand,
-            record.model,
-            record.serial,
-            record.date,
-            record.technicianName
-        ];
-        tableRows.push(rowData);
+        // --- 1. Header ---
+        pageHtml += `
+            <div class="pdf-header">
+                <div>
+                    <div class="pdf-title">AC Preventive Maintenance Report</div>
+                    <div class="pdf-site-info">Site: CHUB Hospital</div>
+                </div>
+                <div class="pdf-meta">
+                    <div><strong>Work Date:</strong> ${record.date}</div>
+                    <div><strong>Technician:</strong> ${record.technicianName}</div>
+                    <div><strong>Generated:</strong> ${new Date().toLocaleDateString()}</div>
+                </div>
+            </div>
+        `;
+
+        // --- 2. Blue Card (AC Details) ---
+        pageHtml += `
+            <div class="pdf-card">
+                <h2>${record.tag}</h2>
+                <p><strong>Brand/Model:</strong> ${record.brand} ${record.model} | <strong>Type:</strong> ${record.type}</p>
+                <p><strong>Location:</strong> ${record.dept} - ${record.location}</p>
+                <p><strong>Serial Number:</strong> ${record.serial}</p>
+            </div>
+        `;
+
+        // --- 3. Checklist Sections ---
+        const categories = [...new Set(template.map(item => item.category))];
+        
+        categories.forEach(cat => {
+            pageHtml += `<div class="pdf-section">`;
+            pageHtml += `<div class="pdf-section-title">${cat}</div>`;
+            pageHtml += `<div class="pdf-grid">`;
+
+            const catItems = template.filter(item => item.category === cat);
+            
+            catItems.forEach(item => {
+                const status = record.checklist[item.id] || 'N/A';
+                let statusClass = 'pdf-status-na';
+                if (status === 'pass') statusClass = 'pdf-status-pass';
+                if (status === 'fail') statusClass = 'pdf-status-fail';
+
+                const note = (record.notes && record.notes[item.id]) 
+                    ? `<span class="pdf-note">Note: ${record.notes[item.id]}</span>` 
+                    : '';
+
+                pageHtml += `
+                    <div class="pdf-grid-item">
+                        <div>• ${item.task} <span class="${statusClass}">[${status.toUpperCase()}]</span></div>
+                        ${note}
+                    </div>
+                `;
+            });
+
+            pageHtml += `</div></div>`; // Close grid and section
+        });
+
+        // --- 4. Footer / Signatures (Approved By) ---
+        pageHtml += `
+            <div class="pdf-footer">
+                <div class="pdf-signature-box">
+                    <div><strong>Prepared by:</strong> ${record.technicianName}</div>
+                    <div class="pdf-signature-line">Technician Signature</div>
+                </div>
+                <div class="pdf-signature-box">
+                    <div><strong>Approved by:</strong> ${record.approvedBy || 'Pending'}</div>
+                    <div class="pdf-signature-line">In-Charge Signature</div>
+                </div>
+            </div>
+        `;
+
+        pageHtml += `</div>`; // Close .pdf-page
+        container.innerHTML += pageHtml;
     });
 
-    // --- 3. Generate AutoTable ---
-    doc.autoTable({
-        head: [tableColumn],
-        body: tableRows,
-        startY: 35, // Start Y position after the header
-        theme: 'grid', // 'grid', 'striped', or 'plain'
-        headStyles: { fillColor: [0, 86, 179], textColor: [255, 255, 255], fontSize: 8 },
-        bodyStyles: { fontSize: 7, textColor: [50, 50, 50] },
-        alternateRowStyles: { fillColor: [245, 245, 245] },
-        margin: { top: 35, left: 14, right: 14 },
-        didDrawPage: function (data) {
-            // Add page numbers at the bottom
-            const pageCount = doc.internal.getNumberOfPages();
-            doc.setFontSize(8);
-            doc.text(`Page ${data.pageNumber} of ${pageCount}`, data.settings.margin.left, doc.internal.pageSize.height - 10);
-        }
-    });
+    // --- 5. Convert HTML to PDF ---
+    const opt = {
+        margin:       0,
+        filename:     `CHUB_AC_PM_Report_${new Date().toISOString().split('T')[0]}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'px', format: [800, 1130], orientation: 'portrait' } // Custom size matching our 800px width
+    };
 
-    // --- 4. Add Signatures at the Bottom ---
-    const finalY = doc.lastAutoTable.finalY + 20; // Get Y position after the table ends
-    
-    doc.setFontSize(10);
-    doc.setTextColor(0);
-    doc.text("Prepared by: Hillaly KUBWIMANA", 14, finalY);
-    doc.line(14, finalY + 2, 80, finalY + 2); // Signature line
-
-    doc.text("Approved by: Munyaneza Joseph", 140, finalY);
-    doc.line(140, finalY + 2, 200, finalY + 2); // Signature line
-
-    // --- 5. Save the PDF ---
-    doc.save(`CHUB_AC_PM_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+    // Generate and download the PDF
+    html2pdf().set(opt).from(container).save();
 }
