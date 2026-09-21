@@ -1,10 +1,10 @@
 {
   "users": [
-    { "id": "tech1", "name": "Technician 1", "role": "technician", "pin": "1111" },
-    { "id": "tech2", "name": "Technician 2", "role": "technician", "pin": "2222" },
-    { "id": "tech3", "name": "Technician 3", "role": "technician", "pin": "3333" },
-    { "id": "tech4", "name": "Technician 4", "role": "technician", "pin": "4444" },
-    { "id": "tech5", "name": "Technician 5", "role": "technician", "pin": "5555" },
+       { "id": "tech1", "name": "Hillaly KUBWIMANA", "role": "technician", "pin": "1111" },
+    { "id": "tech2", "name": "HIRWA jean deluce", "role": "technician", "pin": "2222" },
+    { "id": "tech3", "name": "HABARUREMA jean claude", "role": "technician", "pin": "3333" },
+    { "id": "tech4", "name": "YANDEREYE felecien", "role": "technician", "pin": "4444" },
+    { "id": "tech5", "name": "GATANGANWA Raissa", "role": "technician", "pin": "5555" },
     { "id": "inch1", "name": "Admin In-Charge", "role": "incharge", "service": "Administration", "pin": "1001" },
     { "id": "inch2", "name": "Lab In-Charge", "role": "incharge", "service": "Laboratory", "pin": "1002" },
     { "id": "inch3", "name": "OR In-Charge", "role": "incharge", "service": "Operating Theatre", "pin": "1003" },
