@@ -197,7 +197,7 @@ function generateSmartPDF() {
         container.innerHTML += pageHtml;
     });
 
-       // --- 5. Convert HTML to PDF ---
+    // --- 5. Convert HTML to PDF ---
     // Temporarily make the container visible for the PDF generator to read it
     container.style.opacity = '1';
     container.style.zIndex = '9999';
@@ -219,8 +219,4 @@ function generateSmartPDF() {
         container.style.position = 'absolute';
         container.innerHTML = ''; // Clear the content
     });
-}
-
-    // Generate and download the PDF
-    html2pdf().set(opt).from(container).save();
 }
