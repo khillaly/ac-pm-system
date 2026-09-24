@@ -93,7 +93,7 @@
         /* Modals & Overlays */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10, 30, 50, 0.55); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
         .modal-overlay.show { display: flex; }
-        .modal-box { background: white; border-radius: 24px; padding: 32px 28px; max-width: 500px; width: 100%; box-shadow: 0 25px 60px -12px rgba(0,0,0,0.4); max-height: 90vh; overflow-y: auto; }
+        .modal-box { background: white; border-radius: 24px; padding: 32px 28px; max-width: 500px; width: 100%; box-shadow: 0 25px 60px -12px rgba(0,0,0,0.4); max-height: 90vh; overflow-y: auto; position: relative; z-index: 1001; }
         .modal-box h2 { font-size: 1.35rem; color: #12405e; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
         .modal-box p { font-size: 0.9rem; color: #5b7b96; margin-bottom: 22px; }
         .modal-box .field-group { margin-bottom: 16px; }
@@ -176,67 +176,6 @@
             <div class="gen-badge">Active</div>
         </div>
 
-        <!-- ======================== OPERATIONAL DATA ======================== -->
-        <div class="section-title" style="font-size: 1.3rem; font-weight: 600; color: #12405e; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-            <span>🌡️</span> Operational Data & Predictive Servicing
-        </div>
-        <div class="grid-3-wide" style="margin-bottom: 32px;">
-            <div class="card">
-                <div class="card-header"><span>📊</span> HVAC Measurements</div>
-                <div class="card-body">
-                    <div class="field-group">
-                        <label for="supplyTemp">Supply Air Temp (°C)</label>
-                        <input type="number" id="supplyTemp" step="0.1" placeholder="e.g. 12.5">
-                    </div>
-                    <div class="field-group">
-                        <label for="returnTemp">Return Air Temp (°C)</label>
-                        <input type="number" id="returnTemp" step="0.1" placeholder="e.g. 24.0">
-                    </div>
-                    <div class="field-group">
-                        <label for="deltaT">Delta T (Calculated)</label>
-                        <input type="text" id="deltaT" readonly placeholder="—" style="background:#f0f6fc; font-weight:bold;">
-                    </div>
-                    <div class="field-group">
-                        <label for="suctionPressure">Suction Pressure (PSI/Bar)</label>
-                        <input type="number" id="suctionPressure" step="0.1" placeholder="e.g. 65">
-                    </div>
-                    <div class="field-group">
-                        <label for="dischargePressure">Discharge Pressure (PSI/Bar)</label>
-                        <input type="number" id="dischargePressure" step="0.1" placeholder="e.g. 250">
-                    </div>
-                    <div class="field-group">
-                        <label for="compressorAmps">Compressor Amps (A)</label>
-                        <input type="number" id="compressorAmps" step="0.1" placeholder="e.g. 8.5">
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header"><span>📋</span> Planned & Predictive Servicing</div>
-                <div class="card-body">
-                    <div class="field-group">
-                        <label for="lastServiceDate">Last PM Date</label>
-                        <input type="date" id="lastServiceDate">
-                    </div>
-                    <div class="field-group">
-                        <label for="nextServiceDate">Next Planned PM Date (from sheet)</label>
-                        <input type="date" id="nextServiceDate" readonly style="background:#f0f6fc;">
-                    </div>
-                    <div class="field-group">
-                        <label>Days Remaining</label>
-                        <div style="font-size: 1.4rem; font-weight: 800; color:#1b6b3f;" id="predDaysRemaining">—</div>
-                    </div>
-                    <div class="field-group">
-                        <label>Status</label>
-                        <div id="predictionStatus" style="padding: 14px 18px; border-radius: 16px; background: #e2f0e6; color: #1b6b3f; font-weight: 700; font-size: 1.05rem; display: flex; align-items: center; gap: 10px; border: 1.5px solid #b8dfc3;">
-                            <span style="font-size:1.4rem;">✅</span>
-                            <span id="predictionStatusText">OK — Service on track</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- ======================== INSPECTION CHECKLIST ======================== -->
         <div class="section-title" style="font-size: 1.3rem; font-weight: 600; color: #12405e; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
             <span>🔍</span> Inspection Checklist
@@ -307,7 +246,7 @@
                         <span style="font-weight: 500; color: #1f3c54; display: block; margin-bottom: 8px;">Performance:</span>
                         <div class="rating-block">
                             <div class="rating-option"><input type="radio" name="ratingDrainage" value="good" checked> <label>Smooth</label></div>
-                            <div class="rating-option"><input type="radio" name="ratingDrainage" value="delay"> <label>Delayed</label></div>
+                            <div class="rating-option"><input type="radio" name="ratingDrainage" value="delayed"> <label>Delayed</label></div>
                             <div class="rating-option"><input type="radio" name="ratingDrainage" value="issue"> <label>Issue</label></div>
                         </div>
                     </div>
@@ -363,7 +302,7 @@
 
             <div class="field-group" style="text-align: left;">
                 <label for="loginPinInput">Your PIN</label>
-                <input type="password" id="loginPinInput" inputmode="numeric" maxlength="8" placeholder="••••" style="text-align: center; font-size: 1.5rem; letter-spacing: 8px;" onkeypress="if(event.key==='Enter'){document.getElementById('loginBtn').click();}">
+                <input type="password" id="loginPinInput" inputmode="numeric" maxlength="8" placeholder="••••" style="text-align: center; font-size: 1.5rem; letter-spacing: 8px;">
             </div>
 
             <div id="loginError" style="color: #b33a3a; font-size: 0.9rem; margin-top: 6px; min-height: 20px;"></div>
@@ -433,7 +372,7 @@
     <script>
         (function() {
             // 🔗 REPLACE THIS WITH YOUR NEW GOOGLE APPS SCRIPT URL
-            const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzq9Np0rhHJl0W9T4IhMaazb_5JHyUBfYmhWMLL2ny3HuQtRE-XkFZFcRskvHUA9Q6D/exec';
+            const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/YOUR_NEW_SCRIPT_ID/exec';
 
             // ============================================================
             // 🔐 TECHNICIAN PINs
@@ -533,13 +472,6 @@
                 const ac = AC_INVENTORY[idx];
                 acTitle.textContent = `${ac.tag} — ${ac.loc}`;
                 acSub.textContent = `${ac.dept} · ${ac.type} · ${ac.brand} · ${ac.model} · SN: ${ac.serial || 'N/A'}`;
-                
-                // Pre-fill Next PM Date
-                const nextPmInput = document.getElementById('nextServiceDate');
-                if (!nextPmInput.value) {
-                    nextPmInput.value = '2026-09-20'; 
-                }
-                updatePrediction();
             }
             acSelect.addEventListener('change', updateAcBanner);
 
@@ -600,7 +532,7 @@
             }
 
             // ============================================================
-            // 📅 WORK DATE & PREDICTIVE SERVICING
+            // 📅 WORK DATE
             // ============================================================
             function setAutoWorkDate() {
                 const today = new Date();
@@ -620,68 +552,8 @@
                 document.getElementById('signoffWorkDate').textContent = formatted;
             }
 
-            function updatePrediction() {
-                const lastDate = document.getElementById('lastServiceDate').value;
-                const nextDate = document.getElementById('nextServiceDate').value;
-                const predStatus = document.getElementById('predictionStatus');
-                const predText = document.getElementById('predictionStatusText');
-                const daysRem = document.getElementById('predDaysRemaining');
-
-                if (!lastDate || !nextDate) {
-                    predStatus.style.background = '#e7f0f8';
-                    predStatus.style.color = '#1e4a6d';
-                    predStatus.style.borderColor = '#cfdfeb';
-                    predStatus.querySelector('span:first-child').textContent = 'ℹ️';
-                    predText.textContent = 'Fill in Last PM Date to see prediction';
-                    daysRem.textContent = '—';
-                    return;
-                }
-
-                const now = new Date();
-                const next = new Date(nextDate + 'T00:00:00');
-                const diffTime = next - now;
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                daysRem.textContent = diffDays + ' days';
-
-                if (diffDays < 0) {
-                    predStatus.style.background = '#ffe6e6'; predStatus.style.color = '#b33a3a'; predStatus.style.borderColor = '#f0b8b8';
-                    predStatus.querySelector('span:first-child').textContent = '🚨';
-                    predText.textContent = `OVERDUE — ${Math.abs(diffDays)} days past due`;
-                } else if (diffDays <= 14) {
-                    predStatus.style.background = '#ffe6e6'; predStatus.style.color = '#b33a3a'; predStatus.style.borderColor = '#f0b8b8';
-                    predStatus.querySelector('span:first-child').textContent = '⚠️';
-                    predText.textContent = `DUE SOON — ${diffDays} days left`;
-                } else if (diffDays <= 30) {
-                    predStatus.style.background = '#fff3cd'; predStatus.style.color = '#7a5300'; predStatus.style.borderColor = '#f4d97a';
-                    predStatus.querySelector('span:first-child').textContent = '🔔';
-                    predText.textContent = `Plan PM — ${diffDays} days remaining`;
-                } else {
-                    predStatus.style.background = '#e2f0e6'; predStatus.style.color = '#1b6b3f'; predStatus.style.borderColor = '#b8dfc3';
-                    predStatus.querySelector('span:first-child').textContent = '✅';
-                    predText.textContent = `OK — ${diffDays} days until next PM`;
-                }
-            }
-
-            document.getElementById('lastServiceDate').addEventListener('change', updatePrediction);
-            document.getElementById('nextServiceDate').addEventListener('change', updatePrediction);
-
-            // Delta T Calculation
-            const supplyTemp = document.getElementById('supplyTemp');
-            const returnTemp = document.getElementById('returnTemp');
-            const deltaT = document.getElementById('deltaT');
-
-            function calculateDeltaT() {
-                const s = parseFloat(supplyTemp.value);
-                const r = parseFloat(returnTemp.value);
-                if (!isNaN(s) && !isNaN(r)) {
-                    deltaT.value = (r - s).toFixed(1) + ' °C';
-                } else {
-                    deltaT.value = '—';
-                }
-            }
-            supplyTemp.addEventListener('input', calculateDeltaT);
-            returnTemp.addEventListener('input', calculateDeltaT);
+            // Delta T Calculation (Removed since HVAC inputs are gone)
+            // ============================================================
 
             // ============================================================
             // 💾 LOCAL QUEUE & GOOGLE SHEETS SYNC
@@ -751,7 +623,6 @@
                 const now = new Date();
                 const timestamp = now.toLocaleString('en-GB', { hour12: false, day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
                 
-                const getChecked = (className) => document.querySelectorAll('.' + className + ':checked').length;
                 const getTickedItems = (prefix, max) => {
                     const items = [];
                     for (let i = 1; i <= max; i++) {
@@ -773,16 +644,6 @@
                     site: 'CHUB',
                     workDate: document.getElementById('workDate').value,
                     generatedAt: timestamp,
-                    supplyTemp: supplyTemp.value || '—',
-                    returnTemp: returnTemp.value || '—',
-                    deltaT: deltaT.value || '—',
-                    suctionPressure: document.getElementById('suctionPressure').value || '—',
-                    dischargePressure: document.getElementById('dischargePressure').value || '—',
-                    compressorAmps: document.getElementById('compressorAmps').value || '—',
-                    lastServiceDate: document.getElementById('lastServiceDate').value || '—',
-                    nextServiceDate: document.getElementById('nextServiceDate').value || '—',
-                    daysRemaining: document.getElementById('predDaysRemaining').textContent || '—',
-                    predictionStatus: document.getElementById('predictionStatusText').textContent || '—',
                     // Checklists
                     airflowItems: getTickedItems('check', 5).join('|'),
                     airflowRemark: document.getElementById('remarkAirflow').value.trim() || '—',
@@ -822,13 +683,10 @@
                 document.querySelectorAll('input[type="text"], input[type="number"]').forEach(inp => inp.value = '');
                 document.querySelectorAll('input[type="radio"]').forEach(rb => rb.checked = false);
                 document.querySelectorAll('input[type="radio"][value="good"]').forEach(rb => rb.checked = true);
-                document.getElementById('lastServiceDate').value = '';
-                document.getElementById('nextServiceDate').value = '';
                 acSelect.selectedIndex = 0;
                 updateAcBanner();
                 updateTechnicianDisplay();
                 setAutoWorkDate();
-                updatePrediction();
                 if (showMsg) showStatus('Form has been reset.', true);
             }
 
@@ -890,13 +748,9 @@ body { font-family: 'Segoe UI', Arial, sans-serif; color: #1a2e45; background: w
 .gen-banner .gen-name { font-size: 1.1rem; font-weight: 800; }
 .gen-banner .gen-sub { font-size: 0.8rem; color: #cbe4f7; margin-top: 2px; }
 .section-title { font-size: 0.98rem; font-weight: 700; color: #12405e; margin: 12px 0 6px 0; padding-bottom: 3px; border-bottom: 2px solid #d4e3ef; }
-.info-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
-.info-box { background: #f9fcff; border: 1px solid #d4e3ef; border-radius: 8px; padding: 8px 10px; }
-.info-box .label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.5px; color: #5b7b96; font-weight: 700; margin-bottom: 3px; }
-.info-box .value { font-size: 0.92rem; font-weight: 700; color: #12405e; }
-.rating-tag { display: inline-block; background: #e7f0f8; color: #12405e; padding: 2px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; margin-bottom: 6px; text-transform: capitalize; }
 ul.check-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 1px 20px; margin-bottom: 4px; }
 ul.check-list li { padding: 2px 0; color: #1f3c54; font-size: 0.85rem; }
+.rating-tag { display: inline-block; background: #e7f0f8; color: #12405e; padding: 2px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; margin-bottom: 6px; text-transform: capitalize; }
 .remark-box { background: #fbfdff; border-left: 3px solid #9cb9d0; padding: 6px 10px; border-radius: 4px; font-size: 0.8rem; color: #3a6583; margin-bottom: 6px; font-style: italic; }
 .signoff-block { margin-top: 14px; padding: 12px 16px; background: #f0f6fc; border-radius: 10px; border: 1px solid #cfe0ee; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; page-break-inside: avoid; }
 .signoff-block .tech-name { font-size: 1.05rem; font-weight: 700; color: #0a2a3f; }
@@ -918,20 +772,6 @@ ul.check-list li { padding: 2px 0; color: #1f3c54; font-size: 0.85rem; }
 <div class="gen-banner">
   <div class="gen-name">${data.acTag} — ${data.acLocation}</div>
   <div class="gen-sub">${data.acBrand} · ${data.acModel} · SN: ${data.acSerial}</div>
-</div>
-
-<div class="section-title">🌡️ Operational Data & Predictive Servicing</div>
-<div class="info-grid">
-  <div class="info-box"><div class="label">Supply Temp</div><div class="value">${data.supplyTemp} °C</div></div>
-  <div class="info-box"><div class="label">Return Temp</div><div class="value">${data.returnTemp} °C</div></div>
-  <div class="info-box"><div class="label">Delta T</div><div class="value">${data.deltaT}</div></div>
-  <div class="info-box"><div class="label">Compressor Amps</div><div class="value">${data.compressorAmps} A</div></div>
-</div>
-<div class="info-grid">
-  <div class="info-box"><div class="label">Suction Pressure</div><div class="value">${data.suctionPressure}</div></div>
-  <div class="info-box"><div class="label">Discharge Pressure</div><div class="value">${data.dischargePressure}</div></div>
-  <div class="info-box"><div class="label">Last PM Date</div><div class="value">${data.lastServiceDate}</div></div>
-  <div class="info-box"><div class="label">Next PM Date</div><div class="value">${data.nextServiceDate}</div></div>
 </div>
 
 <div class="section-title">🌬️ Filters, Coils & Airflow</div>
@@ -1020,23 +860,42 @@ ${data.drainageRemark !== '—' ? '<div class="remark-box">📝 ' + data.drainag
                 document.getElementById('loginTechSelect').focus();
             }
 
-            document.getElementById('loginBtn').addEventListener('click', function() {
-                const name = document.getElementById('loginTechSelect').value;
-                const pin = document.getElementById('loginPinInput').value.trim();
-                const errorEl = document.getElementById('loginError');
-                errorEl.textContent = '';
+            // FIX: Robust Login Logic
+            const loginBtn = document.getElementById('loginBtn');
+            if (loginBtn) {
+                loginBtn.addEventListener('click', function() {
+                    console.log("Login button clicked"); // Debug
+                    const name = document.getElementById('loginTechSelect').value;
+                    const pin = document.getElementById('loginPinInput').value.trim();
+                    const errorEl = document.getElementById('loginError');
+                    errorEl.textContent = '';
 
-                if (!name) { errorEl.textContent = '⚠️ Please select your name.'; return; }
-                if (!pin) { errorEl.textContent = '⚠️ Please enter your PIN.'; return; }
-                if (TECHNICIAN_PINS[name] !== pin) {
-                    errorEl.textContent = '❌ Wrong PIN for ' + name;
-                    document.getElementById('loginPinInput').value = '';
-                    document.getElementById('loginPinInput').focus();
-                    return;
+                    if (!name) { errorEl.textContent = '⚠️ Please select your name.'; return; }
+                    if (!pin) { errorEl.textContent = '⚠️ Please enter your PIN.'; return; }
+
+                    console.log("Checking PIN for:", name, "Entered:", pin); // Debug
+                    if (TECHNICIAN_PINS[name] !== pin) {
+                        errorEl.textContent = '❌ Wrong PIN for ' + name;
+                        document.getElementById('loginPinInput').value = '';
+                        document.getElementById('loginPinInput').focus();
+                        return;
+                    }
+                    
+                    console.log("Login successful"); // Debug
+                    saveSession(name);
+                    unlockApp(name);
+                    showStatus('✅ Welcome, ' + name + '!', true);
+                });
+            } else {
+                console.error("Login button not found in DOM");
+            }
+
+            // Add Enter key listener for PIN input
+            document.getElementById('loginPinInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    loginBtn.click();
                 }
-                saveSession(name);
-                unlockApp(name);
-                showStatus('✅ Welcome, ' + name + '!', true);
             });
 
             document.getElementById('logoutBtn').addEventListener('click', function() {
@@ -1064,7 +923,8 @@ ${data.drainageRemark !== '—' ? '<div class="remark-box">📝 ' + data.drainag
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js?v=4')
+                // UPDATED TO v=5 TO FORCE CACHE CLEAR
+                navigator.serviceWorker.register('sw.js?v=5')
                     .then(reg => console.log('✅ Service Worker registered:', reg.scope))
                     .catch(err => console.warn('⚠️ Service Worker failed:', err));
             });
